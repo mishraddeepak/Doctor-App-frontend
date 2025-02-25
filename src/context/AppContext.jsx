@@ -20,7 +20,7 @@ export default function AppContextProvider(props) {
   );
   const [userData, setUserData] = useState({});
   const [appointments, setAppointments] = useState([]);
-
+console.log(userId)
   const fetchUser = async () => {
     console.log(ptoken);
     try {
@@ -39,7 +39,7 @@ export default function AppContextProvider(props) {
       }
     } catch (err) {
       console.log(err);
-      // toast.error(data.message);
+      toast.error(data?.message);
     }
   };
   const getAllAppointments = async () => {
@@ -54,46 +54,7 @@ export default function AppContextProvider(props) {
       toast.error(error.message);
     }
   };
-  const getUserProfile = async () => {
-    // try {
-    //   const userData = {
-    //     message: "User profile retrieved successfully",
-    //     data: {
-    //       address: {
-    //         line1: "789 New Avenue",
-    //         line2: "Suite 101",
-    //       },
-    //       _id: "678fb723c6a466e20ff95dc3",
-    //       name: "Admin Admin",
-    //       email: "admin@admin.com",
-    //       role: "ADMIN",
-    //       phone: "9876543",
-    //       appointments: [
-    //         "6793c1f0ba4d39493c01bf0f",
-    //         "6793c633ba4d39493c01bf16",
-    //         "6793c70199223ce16f50a9b5",
-    //         "6793c72770594e1f059f5359",
-    //         "67947512eb79eb48547620e3",
-    //       ],
-    //       uploadedFiles: [],
-    //       createdAt: "2025-01-21T15:02:59.596Z",
-    //       updatedAt: "2025-01-25T18:35:20.531Z",
-    //       __v: 6,
-    //       gender: "Male",
-    //       dob: "Sat Jan 01 2022 00:00:00 GMT+0530 (India Standard Time)",
-    //     },
-    //   };
-    //   setUserData(userData.data);
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  };
 
-  const getAllDoctor = async () => {
-    try {
-      const { data } = await axios.get(`${backendUrl}/`);
-    } catch (error) {}
-  };
 
   console.log(userData);
   const value = {

@@ -46,19 +46,22 @@ export default function Login({ onLogin }) {
         `${backendUrl}/api/createuser`,
         userData
       );
+      console.log(data)
       if (data.success) {
         toast.success("You have registered");
-        localStorage.setItem("ptoken", data.token);
         setPToken(data.token);
         setUserData(data.userObj);
+        localStorage.setItem("ptoken", data.token);
         localStorage.setItem("userId", data.userObj._id);
-        login(data.token); // Call login function from AuthContext
+        login(data.token); 
         navigate("/");
         fetchUser();
       } else {
+
         toast.error(data.message);
       }
     } catch (error) {
+      console.log(error)
       toast.error(data.message);
     }
   };
@@ -72,7 +75,6 @@ export default function Login({ onLogin }) {
           email,
           password,
           phone,
-          role: "PATIENT",
         };
         await registerUser(userData);
       } else {

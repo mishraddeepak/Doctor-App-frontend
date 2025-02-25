@@ -154,6 +154,7 @@ console.log(localStorage.getItem("userId"))
     }
     setLoading(true);
     try {
+      console.log(ptoken)
       const response = await axios.post(
         `${backendUrl}/api/patient/book-appointment`,
         formData,
@@ -169,7 +170,7 @@ console.log(localStorage.getItem("userId"))
       getAllAppointments();
     } catch (error) {
       console.error("Error booking appointment:", error);
-      alert("Please update your profile to book an appointment.");
+      alert("Unable to book appointment");
     } finally {
       setLoading(false);
     }
