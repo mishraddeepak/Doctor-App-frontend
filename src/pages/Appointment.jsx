@@ -13,26 +13,23 @@ export default function Appointment() {
     userId,
     userData,
     fetchUser,
-
     allData,
     getAllAppointments,
     doctors,
     currencySymbol,
-
     backendUrl,
   } = useContext(AppContext);
-
   const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const [docInfo, setDocInfo] = useState(null);
   const [docSlots, setDocSlots] = useState([]);
   const [slotIndex, setSlotIndex] = useState(0);
   const [slotTimes, setSlotTimes] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState(0); // 0 = current month
+  const [selectedMonth, setSelectedMonth] = useState(0);
   const [symptoms, setSymptoms] = useState(location.state?.symptoms || "");
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  console.log(selectedDate);
   useEffect(() => {
     fetchUser();
   }, []);
@@ -42,7 +39,6 @@ export default function Appointment() {
       setDocInfo(doctor);
     }
   };
-
   const getAvailableSlots = () => {
     const now = new Date();
     const todayStart = new Date(
@@ -115,35 +111,30 @@ export default function Appointment() {
 
     setDocSlots(slots);
   };
-
-  const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    setUploadedFiles((prev) => [...prev, ...files]);
-  };
-
-  const removeFile = (index) => {
-    setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
-  };
-
   const handleDateSelection = (index) => {
     setSlotIndex(index);
     const selectedSlot = docSlots[index][0]?.datetime;
     setSelectedDate(selectedSlot ? selectedSlot.toLocaleDateString() : "");
   };
-
   const handleMonthChange = (e) => {
     setSelectedMonth(parseInt(e.target.value));
-    setSlotIndex(0); // Reset the slot index when month changes
+    setSlotIndex(0);
   };
-
   const handleSubmit = async () => {
-    if (!symptoms) {
-      alert("Please describe your symptoms");
+    if (!selectedDate) {
+      alert("Please Select Date");
       return;
     }
-console.log(localStorage.getItem("userId"))
+    if (!slotTimes) {
+      alert("Select Slot For the Appointment");
+      return;
+    }
+    if (!symptoms) {
+      alert("Please Describe Your Symptoms");
+      return;
+    }
+    console.log(localStorage.getItem("userId"));
     const formData = new FormData();
-    // formData.append("doctorId", );
     formData.append("patientName", userData.name);
     formData.append("slotTime", slotTimes);
     formData.append("selectedDate", selectedDate);
@@ -154,7 +145,7 @@ console.log(localStorage.getItem("userId"))
     }
     setLoading(true);
     try {
-      console.log(ptoken)
+      console.log(ptoken);
       const response = await axios.post(
         `${backendUrl}/api/patient/book-appointment`,
         formData,
@@ -166,8 +157,14 @@ console.log(localStorage.getItem("userId"))
         }
       );
       console.log(response);
-      alert("Appointment booked successfully!");
-      getAllAppointments();
+      if (response.status === 200) {
+        toast.success("Your Appointment Booked Successfully");
+        getAllAppointments();
+        setSelectedDate("");
+        setSlotTimes("");
+        setSymptoms("");
+        setSlotIndex(0);
+      }
     } catch (error) {
       console.error("Error booking appointment:", error);
       alert("Unable to book appointment");
@@ -175,19 +172,15 @@ console.log(localStorage.getItem("userId"))
       setLoading(false);
     }
   };
-
   useEffect(() => {
     getAllAppointments();
   }, []);
-
   useEffect(() => {
     fetchDocInfo();
   }, [doctors, docId]);
-
   useEffect(() => {
     getAvailableSlots();
   }, [docInfo, selectedMonth]);
-
   return (
     docInfo && (
       <div>
@@ -220,7 +213,6 @@ console.log(localStorage.getItem("userId"))
             </p>
           </div>
         </div>
-
         {/* Booking Section */}
         <div className="sm:ml-72 sm:pl-4 mt-4 font-medium text-gray-700">
           {/* Month Selection */}
@@ -236,7 +228,6 @@ console.log(localStorage.getItem("userId"))
               <option value={2}>Month After Next</option>
             </select>
           </div>
-
           {/* Date Selection */}
           <p className="mt-4">Booking Slots</p>
           <div className="flex gap-3 items-center w-full overflow-x-scroll mt-4">
@@ -255,7 +246,6 @@ console.log(localStorage.getItem("userId"))
               </div>
             ))}
           </div>
-
           {/* Time Slot Selection */}
           <div className="flex items-center gap-3 w-full overflow-x-scroll mt-4">
             {docSlots[slotIndex]?.map((item, index) => {
@@ -264,7 +254,6 @@ console.log(localStorage.getItem("userId"))
                   new Date(appointment.selectedDate).toLocaleDateString() ===
                     selectedDate && appointment.slotTime === item.time
               );
-
               return (
                 <p
                   onClick={() => !isBooked && setSlotTimes(item.time)}
@@ -282,7 +271,6 @@ console.log(localStorage.getItem("userId"))
               );
             })}
           </div>
-
           {/* Symptoms input */}
           <div className="mt-4">
             <p>Describe Your Symptoms</p>
@@ -295,7 +283,6 @@ console.log(localStorage.getItem("userId"))
               required
             />
           </div>
-
           {/* Submit Button */}
           <button
             onClick={handleSubmit}

@@ -1,29 +1,20 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
-
 const AuthContext = createContext();
-
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  const [isAuthenticated, setIsAuthenticated] = useState(null); // Use `null` to indicate loading state
   // Check for token on initial load
   useEffect(() => {
     const token = localStorage.getItem("ptoken");
-    if (token) {
-      setIsAuthenticated(true);
-    }
+    setIsAuthenticated(!!token); // `!!token` converts to `true` if token exists, otherwise `false`
   }, []);
-
   const login = (token) => {
     localStorage.setItem("ptoken", token);
-    setIsAuthenticated(true); // Update isAuthenticated state
+    setIsAuthenticated(true);
   };
-
   const logout = () => {
     localStorage.removeItem("ptoken");
-    localStorage.removeItem("userId");
-    setIsAuthenticated(false); // Update isAuthenticated state
+    setIsAuthenticated(false);
   };
-
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       {children}
@@ -31,5 +22,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Custom hook to use the AuthContext
+// Custom hook to use AuthContext
 export const useAuth = () => useContext(AuthContext);

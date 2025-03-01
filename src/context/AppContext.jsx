@@ -20,7 +20,14 @@ export default function AppContextProvider(props) {
   );
   const [userData, setUserData] = useState({});
   const [appointments, setAppointments] = useState([]);
-console.log(userId)
+  console.log(userId);
+  console.log(userData);
+  useEffect(() => {
+    if (ptoken) {
+      console.log("hii");
+      fetchUser();
+    }
+  }, [ptoken]);
   const fetchUser = async () => {
     console.log(ptoken);
     try {
@@ -33,7 +40,8 @@ console.log(userId)
       console.log(data);
       if (data) {
         setUserData(data.user);
-        console.log(userData)
+        setUserId(data.user._id);
+        console.log(userData);
       } else {
         toast.error(data.message);
       }
@@ -44,17 +52,18 @@ console.log(userId)
   };
   const getAllAppointments = async () => {
     try {
-      const {data} =await axios.get(`${backendUrl}/api/patient/all-appointment/${userId}`)
-       if(data.success){
+      const { data } = await axios.get(
+        `${backendUrl}/api/patient/all-appointment/${userId}`
+      );
+      if (data.success) {
         setAppointments(data.data);
-       }else{
-        toast.error("Error in Fetching Appointments")
-       }
+      } else {
+        toast.error("Error in Fetching Appointments");
+      }
     } catch (error) {
       toast.error(error.message);
     }
   };
-
 
   console.log(userData);
   const value = {

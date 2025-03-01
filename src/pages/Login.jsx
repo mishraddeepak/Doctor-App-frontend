@@ -16,29 +16,38 @@ export default function Login({ onLogin }) {
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
+  useEffect(() => {
+    if (ptoken) {
+      fetchUser();
+    }
+  }, [ptoken]);
 
   const loginUser = async (userData) => {
     try {
-      console.log(backendUrl)
       const { data } = await axios.post(`${backendUrl}/api/login`, userData);
-      console.log(data);
+      console.log("Login response:", data);
       if (data.success) {
-        toast.success(data.message);
-        setPToken(data.accessToken);
+        toast.success(data.message); 
+        setPToken(data.accessToken); 
         setUserData(data.user);
         localStorage.setItem("ptoken", data.accessToken);
         localStorage.setItem("userId", data.user._id);
-        login(data.accessToken); // Call login function from AuthContext
-        navigate("/");
-        fetchUser();
+        login(data.accessToken); 
+        navigate("/"); 
       } else {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error);
+      if (error.response) {
+        toast.error(error.response.data.message); // Display error message from server
+      } else if (error.request) {
+        toast.error("No response received from the server."); // Display network error
+      } else {
+        console.log("Error:", error.message);
+        toast.error("An unexpected error occurred."); // Display generic error
+      }
     }
   };
-
   const registerUser = async (userData) => {
     try {
       console.log(backendUrl)
@@ -57,15 +66,13 @@ export default function Login({ onLogin }) {
         navigate("/");
         fetchUser();
       } else {
-
         toast.error(data.message);
       }
     } catch (error) {
       console.log(error)
-      toast.error(data.message);
+      toast.error(error.message);
     }
   };
-
   const submitHandler = async (event) => {
     event.preventDefault();
     try {
@@ -89,9 +96,7 @@ export default function Login({ onLogin }) {
       toast.error(error.response?.data?.message || "An error occurred");
     }
   };
-
   useEffect(() => {}, [ptoken]);
-
   return (
     <form onSubmit={submitHandler} className="min-h-[80vh] flex items-center">
       <div className="flex flex-col gap-3 m-auto items-start p-8 min-w-[340px] sm:min-w-96 border rounded-xl text-zinc-600 text-sm shadow-lg">
@@ -114,7 +119,6 @@ export default function Login({ onLogin }) {
             />
           </div>
         )}
-
         <div className="w-full">
           <p>Email</p>
           <input
@@ -150,7 +154,6 @@ export default function Login({ onLogin }) {
         ) : (
           ""
         )}
-
         <button
           type="submit"
           className="bg-primary text-white w-full py-2 rounded-md text-base"

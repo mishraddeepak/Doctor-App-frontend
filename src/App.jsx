@@ -1,5 +1,5 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Doctor from "./pages/Doctor";
 import Login from "./pages/Login";
@@ -16,10 +16,10 @@ import { AuthProvider } from "../src/context/authContext"; // Import AuthProvide
 
 function App() {
   return (
-    <AuthProvider>
+    <>
       <div className="mx-4 sm:mx-[10%]">
         <Navbar />
-        <Routes>
+        <Routes >
           <Route path="/" element={<Home />} />
           <Route path="/doctors" element={<Doctor />} />
           <Route path="/login" element={<Login />} />
@@ -34,10 +34,9 @@ function App() {
             <Route path="/book-appointment" element={<Appointment />} />
           </Route>
         </Routes>
-
         <ToastContainer position="top-center" autoClose={1200} />
       </div>
-    </AuthProvider>
+    </>
   );
 }
 
