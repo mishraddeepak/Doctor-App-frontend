@@ -270,7 +270,7 @@ const {logout}  = useAuth()
             <NavLink
               className="bg-primary text-white text-base px-4 py-2 rounded-full font-light"
               onClick={() => {
-                token ? logout() : setShoMenu(false);
+                ptoken ? logout() : setShoMenu(false);
               }}
               to="/login"
             >
