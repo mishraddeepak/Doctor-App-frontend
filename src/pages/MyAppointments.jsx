@@ -73,7 +73,7 @@ useEffect(()=>{
                 <div>
                   <img
                     className="bg-indigo w-32 rounded-md"
-                    src="https://via.placeholder.com/150"
+                    src={item?.doctorId?.docImg||"https://via.placeholder.com/150"}
                     alt="Doctor"
                   />
                 </div>
@@ -125,16 +125,24 @@ useEffect(()=>{
               {/* Expandable Section */}
               {expandedIndex === index && (
                 <div className="mt-4 space-y-4">
-                  <div className="bg-gray-50 p-4 rounded-md">
+                  {/* Doctor name */}
+                  <div className="bg-gray-50 p-4 rounded-md">                 
                     <div className="bg-gray-50 p-1 rounded-md">
                       <h2 className="font-semibold text-gray-700 inline-block mr-2">
                         Doctor:
                       </h2>
                       <span className="text-sm text-gray-600">
                         {item.docName}
+                      </span><br/>
+                      <h2 className="font-semibold text-gray-700 inline-block mr-2">
+                        Fee:<span className="text-sm text-green-600">
+                        {item.docFee}
                       </span>
+                      </h2>
                     </div>
                   </div>
+                  
+                  
                   {/* Symptoms */}
                   <div className="bg-gray-50 p-4 rounded-md">
                     <div className="bg-gray-50 p-1 rounded-md">
